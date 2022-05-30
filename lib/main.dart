@@ -32,7 +32,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   static var _lineCounter = 1;
-  var squareCounter = 10;
+  final _squareCounter = 30;
 
   void _incrementLine() {
     setState(() {
@@ -51,11 +51,11 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Expanded _dataContainerList() {
+  Expanded _dataContainerListTest() {
     return Expanded(
       child: ListView.builder(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          itemCount: squareCounter,
+          itemCount: _squareCounter,
           itemBuilder: (BuildContext context, int index) {
             return Container(
               width: 30,
@@ -70,27 +70,57 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Wrap _dataContainerList() {
+    return Wrap(
+      children: [
+        SizedBox(
+        height: 30,
+        child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            itemCount: _squareCounter,
+            itemBuilder: (BuildContext context, int index) {
+              return Container(
+                width: 30,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black),
+                  color: Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
+                      .withOpacity(1.0),
+                ),
+              );
+            }))
+      ],
+    );
+  }
+
   Container _dateCalendar(day) {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
+        width: 30,
+        height: 20,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black),
         ),
-        child: Text(day.toString()));
+        child: FittedBox(
+            fit: BoxFit.cover, child: Text(day.toString())));
   }
 
-  Row _goalRow() {
-    return Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
-      const SizedBox(
-        width: 250,
-        child: TextField(
-          decoration: InputDecoration(
-            border: UnderlineInputBorder(),
+  SizedBox _goalRow() {
+    return SizedBox(
+        height: 30,
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
+          const SizedBox(
+            width: 250,
+            child: TextField(
+              decoration: InputDecoration(
+                border: UnderlineInputBorder(),
+              ),
+            ),
           ),
-        ),
-      ),
-      _dataContainerList(),
-    ]);
+          _dataContainerList(),
+        ]));
   }
 
   @override
@@ -107,11 +137,18 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  const SizedBox(width: 257), // TODO HARDCODED
-                  for (var i = 1; i <= squareCounter; i++) _dateCalendar(i),
+                  const SizedBox(width: 266), // TODO HARDCODED
+                  for (var i = 1; i <= _squareCounter; i++) _dateCalendar(i),
                 ],
               ),
-              _goalRow()
+              ListView.builder(
+                  //scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  itemCount: _lineCounter,
+                  itemBuilder: (BuildContext context, int index) {
+                    return _goalRow();
+                  })
             ],
           ),
         ),
